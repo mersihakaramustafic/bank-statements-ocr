@@ -13,6 +13,11 @@ def extract_order_number(text):
     
     return re.findall(orderNumberRegex, text)
 
+def extract_amount(text):
+    amountRegex = r'\b\d{2}\,\d{2}\b'
+    
+    return re.findall(amountRegex, text)
+
 
 file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report.pdf'
 
@@ -34,11 +39,11 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 # Apply Gaussian blur to reduce noise and improve accuracy
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-#plt.imshow(thresh)
-#plt.show()
 
 extracted_text = pytesseract.image_to_string(thresh, config='--oem 3 --psm 4')
 orderNumber = extract_order_number(extracted_text)
+amount = extract_amount(extracted_text)
 
 print(extracted_text)
 print(orderNumber)
+print(amount)
