@@ -24,15 +24,16 @@ def extract_payment_date(text):
     return re.findall(dateRegex, text)
 
 def extract_sender_data(thresh):
-    details = pytesseract.image_to_data(thresh, output_type=pytesseract.Output.DICT, config='--oem 3 --psm 4')
-
     # extract sender's data within particular range
-
     cropped_image = image[820:1070, 160:1720]
-    # Perform OCR on the extracted region using pytesseract
     extracted_text = pytesseract.image_to_string(cropped_image)
     print(extracted_text)
 
+def extract_receiver_data(thresh):
+    # extract receiver's data within particular range
+    cropped_image = image[1630:1900, 160:1720]
+    extracted_text = pytesseract.image_to_string(cropped_image)
+    print(extracted_text)
 
 file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report.pdf'
 
@@ -61,6 +62,7 @@ orderNumber = extract_order_number(extractedText)
 amount = extract_amount(extractedText)
 paymentDate = extract_payment_date(extractedText)
 sender_data = extract_sender_data(thresh)
+receiver_data = extract_receiver_data(thresh)
 
 
 #print(extractedText)
