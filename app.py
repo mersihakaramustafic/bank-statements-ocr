@@ -72,12 +72,9 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 # Apply Gaussian blur to reduce noise and improve accuracy
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
-plt.imshow(image)
-plt.show()
 
 extractedText = pytesseract.image_to_string(thresh, config='--oem 3 --psm 4')
 orderNumber = extract_order_number(thresh)
-#paymentDate = extract_payment_date(extractedText)
 extract_sender_data(thresh)
 extract_receiver_data(thresh)
 extract_purpose_of_remittance_data(thresh)
@@ -85,18 +82,3 @@ extract_sender_bank_account(thresh)
 extract_receiver_bank_account(thresh)
 extract_amount(thresh)
 extract_payment_date(thresh)
-
-def extract_order_number_(text):
-    orderNumberRegex = r'\bDPY\d{15}\b'
-    
-    return re.findall(orderNumberRegex, text)
-
-def extract_amount_(text):
-    amountRegex = r'\b\d{2}\,\d{2}\b'
-    
-    return re.findall(amountRegex, text)
-
-def extract_payment_date_(text):
-    dateRegex = r'\b\d{2}\/\d{2}\/\d{4}\b'
-
-    return re.findall(dateRegex, text)
