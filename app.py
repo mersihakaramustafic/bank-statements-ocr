@@ -4,13 +4,14 @@ from pdf2image import convert_from_path
 import matplotlib.pyplot as plt
 import pytesseract
 import re
+import constants as c
 
 def convert_pdf(file_path):
     return convert_from_path(file_path, fmt='jpg')[0]
 
 def extract_order_number(thresh):
     # extract purpose of remittance data within particular range
-    cropped_image = thresh[480:650, 1620:2640]
+    cropped_image = thresh[c.order_number['start_y'] : c.order_number['end_y'], c.order_number['start_x'] : c.order_number['end_x']]
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
     print(extracted_text)
 
