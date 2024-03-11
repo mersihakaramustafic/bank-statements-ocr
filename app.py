@@ -5,58 +5,21 @@ import matplotlib.pyplot as plt
 import pytesseract
 import re
 import constants as c
+import json
 
 def convert_pdf(file_path):
     return convert_from_path(file_path, fmt='jpg')[0]
 
-def extract_order_number(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[c.order_number['start_y'] : c.order_number['end_y'], c.order_number['start_x'] : c.order_number['end_x']]
+def extract_data(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    print(extracted_text)
-
-def extract_sender_data(thresh):
-    # extract sender's data within particular range
-    cropped_image = thresh[820:1070, 160:1720]
-    extracted_text = pytesseract.image_to_string(cropped_image)
-    print(extracted_text)
-
-def extract_receiver_data(thresh):
-    # extract receiver's data within particular range
-    cropped_image = thresh[1630:1900, 160:1720]
-    extracted_text = pytesseract.image_to_string(cropped_image)
-    print(extracted_text)
-
-def extract_purpose_of_remittance_data(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[1240:1470, 160:1720]
-    extracted_text = pytesseract.image_to_string(cropped_image)
-    print(extracted_text)
-
-def extract_sender_bank_account(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[750:830, 2360:3040]
-    extracted_text = pytesseract.image_to_string(cropped_image)
-    print(extracted_text)
-
-def extract_receiver_bank_account(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[910:990, 2360:3040]
-    extracted_text = pytesseract.image_to_string(cropped_image)
-    print(extracted_text)
+    return extracted_text
 
 def extract_amount(thresh):
     # extract purpose of remittance data within particular range
     cropped_image = thresh[1180:1270, 2350:3100]
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
     amountRegex = r'\b\d{2}\,\d{2}\b'    
-    print(re.findall(amountRegex, extracted_text)[0])
-
-def extract_payment_date(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[2120:2200, 620:940]
-    extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    print(extracted_text)
+    return re.findall(amountRegex, extracted_text)[0]
 
 file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report.pdf'
 image = convert_pdf(file_path)
@@ -74,12 +37,15 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
-extractedText = pytesseract.image_to_string(thresh, config='--oem 3 --psm 4')
-orderNumber = extract_order_number(thresh)
-extract_sender_data(thresh)
-extract_receiver_data(thresh)
-extract_purpose_of_remittance_data(thresh)
-extract_sender_bank_account(thresh)
-extract_receiver_bank_account(thresh)
-extract_amount(thresh)
-extract_payment_date(thresh)
+main_json = {
+    "order_number": extract_data(thresh[c.order_number['start_y']:c.order_number['end_y'], c.order_number['start_x']:c.order_number['end_x']]),
+    "sender": extract_data(thresh[c.sender['start_y']:c.sender['end_y'], c.sender['start_x']:c.sender['end_x']]),
+    "receiver": extract_data(thresh[c.receiver['start_y']:c.receiver['end_y'], c.receiver['start_x']:c.receiver['end_x']]),
+    "purpose_of_remittance": extract_data(thresh[c.purpose_of_remittance['start_y']:c.purpose_of_remittance['end_y'], c.purpose_of_remittance['start_x']:c.purpose_of_remittance['end_x']]),
+    "sender_bank_account": extract_data(thresh[c.sender_bank_account['start_y']:c.sender_bank_account['end_y'], c.sender_bank_account['start_x']:c.sender_bank_account['end_x']]),
+    "receiver_bank_account": extract_data(thresh[c.receiver_bank_account['start_y']:c.receiver_bank_account['end_y'], c.receiver_bank_account['start_x']:c.receiver_bank_account['end_x']]),
+    "payment_date": extract_data(thresh[c.payment_date['start_y']:c.payment_date['end_y'], c.payment_date['start_x']:c.payment_date['end_x']]),
+    "amount": extract_amount(thresh) #extract_amount(c.amount['start_y'], c.amount['end_y'], c.amount['start_x'], c.amount['end_x'])
+}
+
+print(json.dumps(main_json))
