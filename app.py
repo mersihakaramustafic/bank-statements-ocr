@@ -14,9 +14,7 @@ def extract_data(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
     return extracted_text
 
-def extract_amount(thresh):
-    # extract purpose of remittance data within particular range
-    cropped_image = thresh[1180:1270, 2350:3100]
+def extract_amount(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
     amountRegex = r'\b\d{2}\,\d{2}\b'    
     return re.findall(amountRegex, extracted_text)[0]
@@ -45,7 +43,7 @@ main_json = {
     "sender_bank_account": extract_data(thresh[c.sender_bank_account['start_y']:c.sender_bank_account['end_y'], c.sender_bank_account['start_x']:c.sender_bank_account['end_x']]),
     "receiver_bank_account": extract_data(thresh[c.receiver_bank_account['start_y']:c.receiver_bank_account['end_y'], c.receiver_bank_account['start_x']:c.receiver_bank_account['end_x']]),
     "payment_date": extract_data(thresh[c.payment_date['start_y']:c.payment_date['end_y'], c.payment_date['start_x']:c.payment_date['end_x']]),
-    "amount": extract_amount(thresh) #extract_amount(c.amount['start_y'], c.amount['end_y'], c.amount['start_x'], c.amount['end_x'])
+    "amount": extract_amount(thresh[c.amount['start_y']:c.amount['end_y'], c.amount['start_x']:c.amount['end_x']])
 }
 
 print(json.dumps(main_json))
