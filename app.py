@@ -11,8 +11,10 @@ def convert_pdf(file_path):
     return convert_from_path(file_path, fmt='jpg')[0]
 
 def extract_data(cropped_image):
-    extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    return extracted_text
+    extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
+    compiled = re.compile(re.escape("\n"), re.IGNORECASE)
+    cleaned_text = compiled.sub("", extracted_text)
+    return cleaned_text
 
 def extract_amount(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
