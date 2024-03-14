@@ -9,6 +9,20 @@ sender = {
     'start_x': 160,
     'start_y': 820,
     'end_x': 1720,
+    'end_y': 900
+}
+
+sender_address = {
+    'start_x': 160,
+    'start_y': 900,
+    'end_x': 1720,
+    'end_y': 980
+}
+
+sender_city = {
+    'start_x': 160,
+    'start_y': 980,
+    'end_x': 1720,
     'end_y': 1070
 }
 

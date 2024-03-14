@@ -36,6 +36,8 @@ gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 # Apply Gaussian blur to reduce noise and improve accuracy
 blurred = cv2.GaussianBlur(gray, (5, 5), 0)
 thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
+plt.imshow(thresh)
+plt.show()
 
 main_json = {
     "order_number": extract_data(thresh[c.order_number['start_y']:c.order_number['end_y'], c.order_number['start_x']:c.order_number['end_x']]),
