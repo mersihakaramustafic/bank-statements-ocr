@@ -28,7 +28,21 @@ sender_city = {
 
 receiver = {
     'start_x': 160,
+    'start_y': 1630,
+    'end_x': 1720,
+    'end_y': 1720
+}
+
+receiver_address = {
+    'start_x': 160,
     'start_y': 1720,
+    'end_x': 1720,
+    'end_y': 1810
+}
+
+receiver_city = {
+    'start_x': 160,
+    'start_y': 1810,
     'end_x': 1720,
     'end_y': 1900
 }
