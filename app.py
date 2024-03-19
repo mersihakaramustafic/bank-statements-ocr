@@ -9,7 +9,10 @@ import json
 from flask import Flask
 
 def convert_pdf(file_path):
-    return convert_from_path(file_path, fmt='jpg')[0]
+    try:
+        return convert_from_path(file_path, fmt='jpg')[0]
+    except Exception as e:
+        return ("Error occured while importing document: " + e)
 
 def extract_data(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
