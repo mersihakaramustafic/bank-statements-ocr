@@ -10,7 +10,8 @@ from flask import Flask
 
 def convert_pdf(file_path):
     try:
-        return convert_from_path(file_path, fmt='jpg')[0]
+        doc = convert_from_path(file_path, fmt='jpg')[0]
+        return doc
     except Exception as e:
         return ("Error occured while importing document: " + e)
 
