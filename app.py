@@ -12,8 +12,6 @@ def convert_pdf(file_path):
     try:
         doc = convert_from_path(file_path, fmt='jpg')[0]
         return doc
-    except FileNotFoundError:
-        print("File not found. Please check the file path.")
     except Exception as e:
         print("An error occurred:", e)
 
