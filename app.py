@@ -6,14 +6,20 @@ import pytesseract
 import re
 import constants as c
 import json
-from flask import Flask
+from flask import Flask, jsonify
 
 def convert_pdf(file_path):
     try:
         doc = convert_from_path(file_path, fmt='jpg')[0]
         return doc
+    
+    except FileNotFoundError:
+        # Handle the case where the file is not found
+        return jsonify({'error': 'PDF file not found'}), 404
+    
     except Exception as e:
-        print("An error occurred:", e)
+        # Handle other exceptions
+        return jsonify({'error': 'An error occurred while processing the PDF file', 'details': str(e)}), 500
 
 def extract_data(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
@@ -31,7 +37,7 @@ app = Flask(__name__)
 @app.route('/')
 def main():
     try:
-        file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/rzzeport.pdf'
+        file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/r5eport.pdf'
         image = convert_pdf(file_path)
         image = np.array(image)
 
