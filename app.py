@@ -37,7 +37,7 @@ app = Flask(__name__)
 @app.route('/')
 def main():
     try:
-        file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/r5eport.pdf'
+        file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report.pdf'
         image = convert_pdf(file_path)
         image = np.array(image)
 
@@ -69,4 +69,4 @@ def main():
 
         return json.dumps(main_json)
     except Exception as e:
-        return "An error occurred:" + str(e)
+        return "An error occurred: " + str(e)
