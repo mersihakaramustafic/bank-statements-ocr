@@ -1,25 +1,25 @@
 import cv2
 import numpy as np
-from pdf2image import convert_from_path
-#import matplotlib.pyplot as plt
+from pdf2image import convert_from_bytes
 import pytesseract
 import re
 import constants as c
 import json
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 
-def convert_pdf(file_path):
-    try:
-        doc = convert_from_path(file_path, fmt='jpg')[0]
-        return doc
+app = Flask(__name__)
+
+def upload_pdf():
+
+    if 'file' not in request.files:
+        return jsonify({'error': 'No file part'})
     
-    except FileNotFoundError:
-        # Handle the case where the file is not found
-        return jsonify({'error': 'PDF file not found'}), 404
+    pdf_file = request.files['file']
     
-    except Exception as e:
-        # Handle other exceptions
-        return jsonify({'error': 'An error occurred while processing the PDF file', 'details': str(e)}), 500
+    if pdf_file.filename == '':
+        return jsonify({'error': 'No selected file'})            
+    
+    return convert_from_bytes(pdf_file.read(), fmt='jpg')[0]
 
 def extract_data(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
@@ -32,17 +32,14 @@ def extract_amount(cropped_image):
     amountRegex = r'\b\d{2}\,\d{2}\b'    
     return re.findall(amountRegex, extracted_text)[0]
 
-app = Flask(__name__)
+@app.route('/', methods=['POST'])
 
-@app.route('/')
 def main():
-    try:
-        file_path = 'C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report.pdf'
-        image = convert_pdf(file_path)
-        image = np.array(image)
+    try:       
+        file = upload_pdf()
+        image = np.array(file)
 
         # PREPROCESSING
-
         # Resize the image to improve OCR accuracy and speed
         image = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 
@@ -66,7 +63,6 @@ def main():
             "payment_date": extract_data(thresh[c.payment_date['start_y']:c.payment_date['end_y'], c.payment_date['start_x']:c.payment_date['end_x']]),
             "amount": extract_amount(thresh[c.amount['start_y']:c.amount['end_y'], c.amount['start_x']:c.amount['end_x']])
         }
-
         return json.dumps(main_json)
     except Exception as e:
         return "An error occurred: " + str(e)
