@@ -29,7 +29,7 @@ def extract_data(cropped_image):
 
 def extract_amount(cropped_image):
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    amountRegex = r'\b\d{2}\,\d{2}\b'    
+    amountRegex = r'\b(\d{1,}\.)*\d{2}\,\d{2}\b'    
     return re.findall(amountRegex, extracted_text)[0]
 
 @app.route('/', methods=['POST'])
