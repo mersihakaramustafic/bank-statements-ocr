@@ -10,7 +10,6 @@ from flask import Flask, jsonify, request
 app = Flask(__name__)
 
 def upload_pdf():
-
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'})
     
@@ -21,15 +20,24 @@ def upload_pdf():
     
     return convert_from_bytes(pdf_file.read(), fmt='jpg')[0]
 
+def detect_report_type(image):
+    extracted_text = pytesseract.image_to_string(image, config='--oem 3 --psm 4')
+    # check if text contain key word UNICREDIT or WISE
+    return report_type
+
 def extract_data(cropped_image):
+    print("OK 1")
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
     compiled = re.compile(re.escape("\n"), re.IGNORECASE)
     cleaned_text = compiled.sub("", extracted_text)
     return cleaned_text
 
 def extract_amount(cropped_image):
+    print("OK 2")
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    amountRegex = r'\b(\d{1,}\.)*\d{2}\,\d{2}\b'    
+    #print(extracted_text)
+    amountRegex = r'\b\d{2}\,\d{2}\b'  
+    # r'(\d{1,3}\.)*\d{1,3}\,\d{2}'  
     return re.findall(amountRegex, extracted_text)[0]
 
 @app.route('/', methods=['POST'])
@@ -42,7 +50,6 @@ def main():
         # PREPROCESSING
         # Resize the image to improve OCR accuracy and speed
         image = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
-
         # Convert the image to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Apply Gaussian blur to reduce noise and improve accuracy
