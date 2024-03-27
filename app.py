@@ -23,7 +23,10 @@ def upload_pdf():
 def detect_report_type(image):
     extracted_text = pytesseract.image_to_string(image, config='--oem 3 --psm 4')
     # check if text contain key word UNICREDIT or WISE
-    return report_type
+    if(len(re.findall(r'unicredit', extracted_text, re.I)) > 0):
+        return 'unicredit'
+    else:
+        return 'wise'
 
 def extract_data(cropped_image):
     print("OK 1")
