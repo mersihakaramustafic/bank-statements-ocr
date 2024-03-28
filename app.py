@@ -38,13 +38,10 @@ def extract_data(cropped_image):
 def extract_amount(cropped_image):
     print("OK 2")
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
-    #print(extracted_text)
     amountRegex = r'\b\d{2}\,\d{2}\b'  
-    # r'(\d{1,3}\.)*\d{1,3}\,\d{2}'  
     return re.findall(amountRegex, extracted_text)[0]
 
 @app.route('/', methods=['POST'])
-
 def main():
     try:       
         file = upload_pdf()
