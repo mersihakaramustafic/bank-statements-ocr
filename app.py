@@ -29,14 +29,12 @@ def detect_report_type(image):
         return 'wise'
 
 def extract_data(cropped_image):
-    print("OK 1")
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')    
     compiled = re.compile(re.escape("\n"), re.IGNORECASE)
     cleaned_text = compiled.sub("", extracted_text)
     return cleaned_text
 
 def extract_amount(cropped_image):
-    print("OK 2")
     extracted_text = pytesseract.image_to_string(cropped_image, config='--oem 3 --psm 4')
     amountRegex = r'\b\d{2}\,\d{2}\b'  
     return re.findall(amountRegex, extracted_text)[0]
@@ -46,7 +44,6 @@ def main():
     try:       
         file = upload_pdf()
         image = np.array(file)
-
         # PREPROCESSING
         # Resize the image to improve OCR accuracy and speed
         image = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
