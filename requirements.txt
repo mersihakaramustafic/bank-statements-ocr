@@ -5,4 +5,3 @@ pytesseract
 flask
 Gunicorn
 poppler-utils
-unittest
