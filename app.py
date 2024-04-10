@@ -31,7 +31,7 @@ def extract_amount(cropped_image):
     amountRegex = r'\b\d{2}\,\d{2}\b'  
     return re.findall(amountRegex, extracted_text)[0]
 
-@app.route('/', methods=['POST'])
+@app.route('/', methods=['POST', 'GET'])
 def main():
     try:       
         file = upload_pdf()
