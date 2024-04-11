@@ -6,8 +6,11 @@ import re
 import constants as c
 import json
 from flask import Flask, jsonify, request
+from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 def upload_pdf():
     if 'file' not in request.files:
@@ -32,6 +35,7 @@ def extract_amount(cropped_image):
     return re.findall(amountRegex, extracted_text)[0]
 
 @app.route('/', methods=['POST', 'GET'])
+@cross_origin()
 def main():
     try:       
         file = upload_pdf()
