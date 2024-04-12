@@ -5,3 +5,4 @@ pytesseract
 flask
 Gunicorn
 poppler-utils
+flask_cors
