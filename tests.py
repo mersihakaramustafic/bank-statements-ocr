@@ -5,7 +5,7 @@ from pdf2image import convert_from_path
 import app as a
 import constants as c
 
-file = convert_from_path('C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report1_new.pdf', fmt='jpg')[0]
+file = convert_from_path('C:/Users/PcCentar/Desktop/repos/bank_statements_ocr/bank_statements/report1.pdf', fmt='jpg')[0]
 image = np.array(file)
 image = cv2.resize(image, None, fx=2, fy=2, interpolation=cv2.INTER_CUBIC)
 gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
