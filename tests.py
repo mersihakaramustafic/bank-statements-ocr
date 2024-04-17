@@ -2,8 +2,6 @@ import unittest
 import cv2
 import numpy as np
 from pdf2image import convert_from_path
-import pytesseract
-import re
 import app as a
 import constants as c
 
