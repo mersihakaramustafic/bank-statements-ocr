@@ -1,15 +1,30 @@
-FROM python:3.9-slim-buster
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim
 
-RUN apt-get update && \
-    apt-get -qq -y install tesseract-ocr && \
-    apt-get -qq -y install libtesseract-dev && \
-    apt-get -qq -y install libgl1
-
+# Set the working directory in the container
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+# Install necessary packages for poppler-utils and others
+RUN apt-get update && apt-get install -y \
+    poppler-utils \
+    libopencv-dev \
+    tesseract-ocr \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . .
+# Copy the current directory contents into the container at /app
+COPY . /app
 
-CMD ["gunicorn", "app:app"]
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Make port 5000 available to the world outside this container
+EXPOSE 5000
+
+# Define environment variable
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Run app.py when the container launches
+CMD ["flask", "run", "--port=5000"]
