@@ -35,6 +35,7 @@ def extract_amount(cropped_image):
     return re.findall(amountRegex, extracted_text)[0]
 
 @app.route('/', methods=['POST', 'GET'])
+# cross_origin is added to allow GET method for the requests
 @cross_origin()
 def main():
     try:       
@@ -47,6 +48,7 @@ def main():
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
         # Apply Gaussian blur to reduce noise and improve accuracy
         blurred = cv2.GaussianBlur(gray, (5, 5), 0)
+        #thresholding the image to improve contrast and OCR accuracy
         thresh = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[1]
 
         main_json = {
