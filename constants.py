@@ -82,3 +82,5 @@ payment_date = {
     'end_x': 940,
     'end_y': 2200
 }
+
+# WISE constants
